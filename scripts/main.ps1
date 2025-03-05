@@ -1,24 +1,14 @@
 #Requires -Modules GitHub
 
 [CmdletBinding()]
-param(
-    [Parameter()]
-    [string] $Subject = $env:<ORG_NAME>_<REPO_NAME>_INPUT_subject
-)
+param()
 
-begin {
-    $scriptName = $MyInvocation.MyCommand.Name
-    Write-Debug "[$scriptName] - Start"
-}
-
-process {
-    try {
-        Write-Output "Hello, $Subject!"
-    } catch {
-        throw $_
-    }
-}
-
-end {
-    Write-Debug "[$scriptName] - End"
+$PSModulePath = $env:PSModulePath -split [System.IO.Path]::PathSeparator | Select-Object -First 1
+Remove-Module -Name Helpers -Force -ErrorAction SilentlyContinue
+Get-Command -Module Helpers | ForEach-Object { Remove-Item -Path function:$_ -Force }
+Get-Item -Path "$PSModulePath/Helpers/999.0.0" | Remove-Item -Recurse -Force
+$modulePath = New-Item -Path "$PSModulePath/Helpers/999.0.0" -ItemType Directory -Force | Select-Object -ExpandProperty FullName
+Copy-Item -Path "$PSScriptRoot/Helpers/*" -Destination $modulePath -Recurse -Force
+LogGroup 'Importing module' {
+    Import-Module -Name Helpers -Verbose
 }
