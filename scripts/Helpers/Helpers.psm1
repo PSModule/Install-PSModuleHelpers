@@ -300,16 +300,16 @@ function Install-PSModule {
     param(
         # Path to the folder where the module source code is located.
         [Parameter(Mandatory)]
-        [string] $ModulePath
+        [string] $Path
     )
 
-    $moduleName = Split-Path -Path $ModulePath -Leaf
-    $manifestFilePath = Join-Path -Path $ModulePath "$moduleName.psd1"
+    $moduleName = Split-Path -Path $Path -Leaf
+    $manifestFilePath = Join-Path -Path $Path "$moduleName.psd1"
     Write-Verbose " - Manifest file path: [$manifestFilePath]" -Verbose
     Resolve-PSModuleDependency -ManifestFilePath $manifestFilePath
     $PSModulePath = $env:PSModulePath -split [System.IO.Path]::PathSeparator | Select-Object -First 1
     $codePath = New-Item -Path "$PSModulePath/$moduleName/999.0.0" -ItemType Directory -Force | Select-Object -ExpandProperty FullName
-    Copy-Item -Path "$ModulePath/*" -Destination $codePath -Recurse -Force
+    Copy-Item -Path "$Path/*" -Destination $codePath -Recurse -Force
     LogGroup 'Importing module' {
         Import-Module -Name $moduleName -Verbose
     }
