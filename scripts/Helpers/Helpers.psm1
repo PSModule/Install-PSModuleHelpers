@@ -303,7 +303,7 @@ function Install-PSModule {
         [string] $Path,
 
         # Return the path of the installed module
-        [Parameter(Mandatory)]
+        [Parameter()]
         [switch] $PassThru
     )
 
