@@ -282,3 +282,35 @@ function Show-FileContent {
         $lineNumber++
     }
 }
+
+function Install-PSModule {
+    <#
+        .SYNOPSIS
+        Installs a build PS module.
+
+        .DESCRIPTION
+        Installs a build PS module.
+
+        .EXAMPLE
+        Install-PSModule -SourceFolderPath $ModuleFolderPath -ModuleName $moduleName
+
+        Installs a module located at $ModuleFolderPath with the name $moduleName.
+    #>
+    [CmdletBinding()]
+    param(
+        # Path to the folder where the module source code is located.
+        [Parameter(Mandatory)]
+        [string] $ModulePath
+    )
+
+    $moduleName = Split-Path -Path $ModulePath -Leaf
+    $manifestFilePath = Join-Path -Path $ModulePath "$moduleName.psd1"
+    Write-Verbose " - Manifest file path: [$manifestFilePath]" -Verbose
+    Resolve-PSModuleDependency -ManifestFilePath $manifestFilePath
+    $PSModulePath = $env:PSModulePath -split [System.IO.Path]::PathSeparator | Select-Object -First 1
+    $codePath = New-Item -Path "$PSModulePath/$moduleName/999.0.0" -ItemType Directory -Force | Select-Object -ExpandProperty FullName
+    Copy-Item -Path "$ModulePath/*" -Destination $codePath -Recurse -Force
+    LogGroup 'Importing module' {
+        Import-Module -Name $moduleName -Verbose
+    }
+}
