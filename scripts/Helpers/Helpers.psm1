@@ -1,4 +1,19 @@
-﻿function Add-ContentFromItem {
+﻿[CmdletBinding()]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSReviewUnusedParameter', '',
+    Justification = 'LogGroup - Scoping affects the variables line of sight.'
+)]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSAvoidUsingWriteHost', '',
+    Justification = 'Want to just write to the console, not the pipeline.'
+)]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSAvoidLongLines', '',
+    Justification = 'Easier to read the multi ternery operators in a single line.'
+)]
+param()
+
+function Add-ContentFromItem {
     <#
         .SYNOPSIS
         Add the content of a folder or file to the root module file.
@@ -75,14 +90,6 @@ function Build-PSModule {
     #>
     [OutputType([void])]
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSReviewUnusedParameter', '', Scope = 'Function',
-        Justification = 'LogGroup - Scoping affects the variables line of sight.'
-    )]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     param(
         # Name of the module.
         [Parameter(Mandatory)]
@@ -130,14 +137,6 @@ function Build-PSModuleBase {
     Build-PSModuleBase -SourceFolderPath 'C:\MyModule\src\MyModule' -OutputFolderPath 'C:\MyModule\build\MyModule'
     #>
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSReviewUnusedParameter', '', Scope = 'Function',
-        Justification = 'LogGroup - Scoping affects the variables line of sight.'
-    )]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     param(
         # Name of the module.
         [Parameter(Mandatory)]
@@ -174,10 +173,6 @@ function Build-PSModuleDocumentation {
     Builds a module.
     #>
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     param(
         # Name of the module.
         [Parameter(Mandatory)]
@@ -295,30 +290,17 @@ function Build-PSModuleDocumentation {
 
 function Build-PSModuleManifest {
     <#
-    .SYNOPSIS
-    Compiles the module manifest.
+        .SYNOPSIS
+        Compiles the module manifest.
 
-    .DESCRIPTION
-    This function will compile the module manifest.
-    It will generate the module manifest file and copy it to the output folder.
+        .DESCRIPTION
+        This function will compile the module manifest.
+        It will generate the module manifest file and copy it to the output folder.
 
-    .EXAMPLE
-    Build-PSModuleManifest -SourceFolderPath 'C:\MyModule\src\MyModule' -OutputFolderPath 'C:\MyModule\build\MyModule'
+        .EXAMPLE
+        Build-PSModuleManifest -SourceFolderPath 'C:\MyModule\src\MyModule' -OutputFolderPath 'C:\MyModule\build\MyModule'
     #>
     [CmdletBinding()]
-
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidLongLines', '', Scope = 'Function',
-        Justification = 'Easier to read the multi ternery operators in a single line.'
-    )]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSReviewUnusedParameter', '', Scope = 'Function',
-        Justification = 'LogGroup - Scoping affects the variables line of sight.'
-    )]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     param(
         # Name of the module.
         [Parameter(Mandatory)]
@@ -789,7 +771,6 @@ function Build-PSModuleRootModule {
         .EXAMPLE
         Build-PSModuleRootModule -SourceFolderPath 'C:\MyModule\src\MyModule' -OutputFolderPath 'C:\MyModule\build\MyModule'
     #>
-    [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSReviewUnusedParameter', '', Scope = 'Function',
         Justification = 'LogGroup - Scoping affects the variables line of sight.'
@@ -798,6 +779,7 @@ function Build-PSModuleRootModule {
         'PSAvoidUsingWriteHost', '', Scope = 'Function',
         Justification = 'Want to just write to the console, not the pipeline.'
     )]
+    [CmdletBinding()]
     param(
         # Name of the module.
         [Parameter(Mandatory)]
@@ -1134,10 +1116,6 @@ function Get-PSModuleAliasesToExport {
         Get-PSModuleAliasesToExport -SourceFolderPath 'C:\MyModule\src\MyModule'
     #>
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     param(
         # Path to the folder where the module source code is located.
         [Parameter(Mandatory)]
@@ -1214,10 +1192,6 @@ function Get-PSModuleCmdletsToExport {
         Get-PSModuleCmdletsToExport -SourceFolderPath 'C:\MyModule\src\MyModule'
     #>
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     param(
         # Path to the folder where the module source code is located.
         [Parameter(Mandatory)]
@@ -1253,10 +1227,6 @@ function Get-PSModuleFunctionsToExport {
         Get-PSModuleFunctionsToExport -SourceFolderPath 'C:\MyModule\src\MyModule'
     #>
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     [OutputType([array])]
     param(
         # Path to the folder where the module source code is located.
@@ -1301,10 +1271,6 @@ function Get-PSModuleVariablesToExport {
         .EXAMPLE
         Get-PSModuleVariablesToExport -SourceFolderPath 'C:\MyModule\src\MyModule'
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     [OutputType([string])]
     [OutputType([Collections.Generic.List[string]])]
     [CmdletBinding()]
@@ -1378,10 +1344,6 @@ function Import-PSModule {
     Imports a module located at $ModuleFolderPath with the name $moduleName.
     #>
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     param(
         # Path to the folder where the module source code is located.
         [Parameter(Mandatory)]
@@ -1425,14 +1387,6 @@ function Publish-PSModule {
     #>
     [OutputType([void])]
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSReviewUnusedParameter', '', Scope = 'Function',
-        Justification = 'LogGroup - Scoping affects the variables line of sight.'
-    )]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSUseDeclaredVarsMoreThanAssignments', '',
-        Justification = 'LogGroup - Scoping affects the variables line of sight.'
-    )]
     param(
         # Name of the module to process.
         [Parameter()]
@@ -1861,27 +1815,23 @@ function Publish-PSModule {
 function Resolve-PSModuleDependency {
     <#
         .SYNOPSIS
-            Resolves module dependencies from a manifest file using Install-PSResource.
+        Resolves module dependencies from a manifest file using Install-PSResource.
 
         .DESCRIPTION
-            Reads a module manifest (PSD1) and for each required module converts the old
-            Install-Module parameters (MinimumVersion, MaximumVersion, RequiredVersion)
-            into a single NuGet version range string for Install-PSResource's –Version parameter.
-            (Note: If RequiredVersion is set, that value takes precedence.)
+        Reads a module manifest (PSD1) and for each required module converts the old
+        Install-Module parameters (MinimumVersion, MaximumVersion, RequiredVersion)
+        into a single NuGet version range string for Install-PSResource's –Version parameter.
+        (Note: If RequiredVersion is set, that value takes precedence.)
 
         .EXAMPLE
-            Resolve-PSModuleDependency -ManifestFilePath 'C:\MyModule\MyModule.psd1'
-    Installs all modules defined in the manifest file, following PSModuleInfo structure.
+        Resolve-PSModuleDependency -ManifestFilePath 'C:\MyModule\MyModule.psd1'
+        Installs all modules defined in the manifest file, following PSModuleInfo structure.
 
         .NOTES
         Should later be adapted to support both pre-reqs, and dependencies.
         Should later be adapted to take 4 parameters sets: specific version ("requiredVersion" | "GUID"), latest version ModuleVersion,
         and latest version within a range MinimumVersion - MaximumVersion.
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
-    )]
     [CmdletBinding()]
     param(
         # The path to the manifest file.
@@ -2005,14 +1955,6 @@ function Update-PSModuleManifestAliasesToExport {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSUseShouldProcessForStateChangingFunctions', '', Scope = 'Function',
         Justification = 'Updates a file that is being built.'
-    )]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSReviewUnusedParameter', '', Scope = 'Function',
-        Justification = 'LogGroup - Scoping affects the variables line of sight.'
-    )]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSAvoidUsingWriteHost', '', Scope = 'Function',
-        Justification = 'Want to just write to the console, not the pipeline.'
     )]
     [CmdletBinding()]
     param(
