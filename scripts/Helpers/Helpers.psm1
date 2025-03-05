@@ -75,8 +75,6 @@ function Build-PSModule {
     #>
     [OutputType([void])]
     [CmdletBinding()]
-    #Requires -Modules @{ ModuleName = 'GitHub'; ModuleVersion = '0.13.2' }
-    #Requires -Modules @{ ModuleName = 'Utilities'; ModuleVersion = '0.3.0' }
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSReviewUnusedParameter', '', Scope = 'Function',
         Justification = 'LogGroup - Scoping affects the variables line of sight.'
@@ -132,7 +130,6 @@ function Build-PSModuleBase {
     Build-PSModuleBase -SourceFolderPath 'C:\MyModule\src\MyModule' -OutputFolderPath 'C:\MyModule\build\MyModule'
     #>
     [CmdletBinding()]
-    #Requires -Modules @{ ModuleName = 'GitHub'; ModuleVersion = '0.13.2' }
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSReviewUnusedParameter', '', Scope = 'Function',
         Justification = 'LogGroup - Scoping affects the variables line of sight.'
@@ -309,8 +306,7 @@ function Build-PSModuleManifest {
     Build-PSModuleManifest -SourceFolderPath 'C:\MyModule\src\MyModule' -OutputFolderPath 'C:\MyModule\build\MyModule'
     #>
     [CmdletBinding()]
-    #Requires -Modules @{ ModuleName = 'GitHub'; ModuleVersion = '0.13.2' }
-    #Requires -Modules @{ ModuleName = 'Utilities'; ModuleVersion = '0.3.0' }
+
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSAvoidLongLines', '', Scope = 'Function',
         Justification = 'Easier to read the multi ternery operators in a single line.'
@@ -762,9 +758,6 @@ function Build-PSModuleManifest {
     }
 }
 
-#Requires -Modules @{ ModuleName = 'GitHub'; ModuleVersion = '0.13.2' }
-#Requires -Modules @{ ModuleName = 'Hashtable'; ModuleVersion = '1.1.1' }
-
 function Build-PSModuleRootModule {
     <#
         .SYNOPSIS
@@ -1141,7 +1134,6 @@ function Get-PSModuleAliasesToExport {
         Get-PSModuleAliasesToExport -SourceFolderPath 'C:\MyModule\src\MyModule'
     #>
     [CmdletBinding()]
-    #Requires -Modules @{ ModuleName = 'Utilities'; ModuleVersion = '0.3.0' }
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSAvoidUsingWriteHost', '', Scope = 'Function',
         Justification = 'Want to just write to the console, not the pipeline.'
@@ -1222,7 +1214,6 @@ function Get-PSModuleCmdletsToExport {
         Get-PSModuleCmdletsToExport -SourceFolderPath 'C:\MyModule\src\MyModule'
     #>
     [CmdletBinding()]
-    #Requires -Modules @{ ModuleName = 'Utilities'; ModuleVersion = '0.3.0' }
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSAvoidUsingWriteHost', '', Scope = 'Function',
         Justification = 'Want to just write to the console, not the pipeline.'
@@ -1434,7 +1425,6 @@ function Publish-PSModule {
     #>
     [OutputType([void])]
     [CmdletBinding()]
-    #Requires -Modules Utilities, PowerShellGet, Microsoft.PowerShell.PSResourceGet, Retry, GitHub, PSSemVer
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSReviewUnusedParameter', '', Scope = 'Function',
         Justification = 'LogGroup - Scoping affects the variables line of sight.'
@@ -1613,12 +1603,21 @@ function Publish-PSModule {
 
     LogGroup 'Get latest version - PSGallery' {
         try {
-            Retry -Count 5 -Delay 10 {
-                Write-Output "Finding module [$Name] in the PowerShell Gallery."
-                $latest = Find-PSResource -Name $Name -Repository PSGallery -Verbose:$false
-                Write-Output ($latest | Format-Table | Out-String)
-            } -Catch {
-                throw $_
+            $retryCount = 5
+            $retryDelay = 10
+            for ($i = 0; $i -lt $retryCount; $i++) {
+                try {
+                    Write-Output "Finding module [$Name] in the PowerShell Gallery."
+                    $latest = Find-PSResource -Name $Name -Repository PSGallery -Verbose:$false
+                    Write-Output ($latest | Format-Table | Out-String)
+                    break
+                } catch {
+                    if ($i -eq $retryCount - 1) {
+                        throw $_
+                    }
+                    Write-Warning "Retrying in $retryDelay seconds..."
+                    Start-Sleep -Seconds $retryDelay
+                }
             }
             $psGalleryVersion = New-PSSemVer -Version $latest.Version
         } catch {
@@ -2015,8 +2014,6 @@ function Update-PSModuleManifestAliasesToExport {
         'PSAvoidUsingWriteHost', '', Scope = 'Function',
         Justification = 'Want to just write to the console, not the pipeline.'
     )]
-    #Requires -Modules @{ ModuleName = 'GitHub'; ModuleVersion = '0.13.2' }
-    #Requires -Modules @{ ModuleName = 'Utilities'; ModuleVersion = '0.3.0' }
     [CmdletBinding()]
     param(
         # Name of the module.
