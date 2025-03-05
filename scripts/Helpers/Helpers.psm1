@@ -300,7 +300,11 @@ function Install-PSModule {
     param(
         # Path to the folder where the module source code is located.
         [Parameter(Mandatory)]
-        [string] $Path
+        [string] $Path,
+
+        # Return the path of the installed module
+        [Parameter(Mandatory)]
+        [switch] $PassThru
     )
 
     $moduleName = Split-Path -Path $Path -Leaf
@@ -312,5 +316,8 @@ function Install-PSModule {
     Copy-Item -Path "$Path/*" -Destination $codePath -Recurse -Force
     LogGroup 'Importing module' {
         Import-Module -Name $moduleName -Verbose
+    }
+    if ($PassThru) {
+        return $codePath
     }
 }
