@@ -1385,6 +1385,10 @@ function Publish-PSModule {
     .EXAMPLE
     Publish-PSModule -Name 'PSModule.FX' -APIKey $env:PSGALLERY_API_KEY
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSUseDeclaredVarsMoreThanAssignments', '',
+        Justification = 'LogGroup - Scoping affects the variables line of sight.'
+    )]
     [OutputType([void])]
     [CmdletBinding()]
     param(
