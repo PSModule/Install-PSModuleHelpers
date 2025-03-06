@@ -32,6 +32,7 @@ runs:
     - name: Install-PSModuleHelpers
       uses: PSModule/GitHub-Script@v1
       with:
+        ShowInfo: false
         Debug: ${{ inputs.Debug }}
         Prerelease: ${{ inputs.Prerelease }}
         Verbose: ${{ inputs.Verbose }}
