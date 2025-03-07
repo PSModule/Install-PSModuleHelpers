@@ -9,6 +9,6 @@ Get-Command -Module Helpers | ForEach-Object { Remove-Item -Path function:$_ -Fo
 Get-Item -Path "$PSModulePath/Helpers/999.0.0" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
 $modulePath = New-Item -Path "$PSModulePath/Helpers/999.0.0" -ItemType Directory -Force | Select-Object -ExpandProperty FullName
 Copy-Item -Path "$PSScriptRoot/Helpers/*" -Destination $modulePath -Recurse -Force
-LogGroup 'Importing module' {
+LogGroup 'Importing helpers' {
     Import-Module -Name Helpers -Verbose
 }
