@@ -310,7 +310,9 @@ function Install-PSModule {
     $moduleName = Split-Path -Path $Path -Leaf
     $manifestFilePath = Join-Path -Path $Path "$moduleName.psd1"
     Write-Verbose " - Manifest file path: [$manifestFilePath]" -Verbose
+    Write-Host '::group::Resolving dependencies'
     Resolve-PSModuleDependency -ManifestFilePath $manifestFilePath
+    Write-Host '::endgroup::'
     $PSModulePath = $env:PSModulePath -split [System.IO.Path]::PathSeparator | Select-Object -First 1
     $codePath = New-Item -Path "$PSModulePath/$moduleName/999.0.0" -ItemType Directory -Force | Select-Object -ExpandProperty FullName
     Copy-Item -Path "$Path/*" -Destination $codePath -Recurse -Force
