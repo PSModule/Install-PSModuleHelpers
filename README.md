@@ -6,6 +6,13 @@ a critical component for setting up a standardized PowerShell environment across
 This GitHub Action is a part of the [PSModule framework](https://github.com/PSModule). It is recommended to use the
 [Process-PSModule workflow](https://github.com/PSModule/Process-PSModule) to automate the whole process of managing the PowerShell module.
 
+## What this action does
+
+- Removes any existing instances of the `Helpers` module from the PowerShell session.
+- Copies the latest version of the `Helpers` module into the PowerShell module directory.
+- Imports the `Helpers` module, ensuring it is available for subsequent steps.
+
+This action helps maintain consistency and reliability across workflows that depend on the PSModule framework.
 
 ## Usage
 
@@ -54,12 +61,3 @@ jobs:
           # Example usage of imported Helpers module
           Get-Command -Module Helpers
 ```
-
-## What this action does:
-
-- Removes any existing instances of the `Helpers` module from the PowerShell session.
-- Copies the latest version of the `Helpers` module into the PowerShell module directory.
-- Imports the `Helpers` module, ensuring it is available for subsequent steps.
-
-This action helps maintain consistency and reliability across workflows that depend on the PSModule framework.
-
