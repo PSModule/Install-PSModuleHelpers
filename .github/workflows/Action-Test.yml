@@ -27,3 +27,12 @@ jobs:
 
       - name: Action-Test
         uses: ./
+
+      - name: Verify Helpers Module Installation
+        shell: pwsh
+        run: |
+          if (Get-Module -Name Helpers -ListAvailable) {
+            Write-Host "Helpers module successfully installed."
+          } else {
+            throw "Helpers module not found!"
+          }
