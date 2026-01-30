@@ -1116,7 +1116,7 @@ function Set-GitHubLogGroup {
 
         .DESCRIPTION
         DSL approach for GitHub Action commands.
-        Allows for colapsing of code in IDE for code that belong together.
+        Allows for collapsing of code in IDE for code that belong together.
 
         .EXAMPLE
         Set-GitHubLogGroup -Name 'MyGroup' -ScriptBlock {
