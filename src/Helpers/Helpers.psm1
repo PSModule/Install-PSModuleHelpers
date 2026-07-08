@@ -321,10 +321,12 @@ function Install-PSModule {
         $moduleVersion = '999.0.0'
     }
     $PSModulePath = $env:PSModulePath -split [System.IO.Path]::PathSeparator | Select-Object -First 1
-    $codePath = New-Item -Path "$PSModulePath/$moduleName/$moduleVersion" -ItemType Directory -Force | Select-Object -ExpandProperty FullName
+    $codePath = New-Item -Path (Join-Path -Path $PSModulePath -ChildPath $moduleName -AdditionalChildPath $moduleVersion) -ItemType Directory -Force | Select-Object -ExpandProperty FullName
     Copy-Item -Path "$Path/*" -Destination $codePath -Recurse -Force
     Write-Host '::group::Importing module'
-    Import-Module -Name $moduleName -Verbose
+    # Import the freshly-installed copy explicitly by its manifest path so it is not shadowed
+    # by another version of the same module that may already be on $env:PSModulePath.
+    Import-Module -Name (Join-Path -Path $codePath -ChildPath "$moduleName.psd1") -Verbose
     Write-Host '::endgroup::'
     if ($PassThru) {
         return $codePath
