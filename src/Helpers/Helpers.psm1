@@ -313,11 +313,33 @@ function Install-PSModule {
     Write-Host '::group::Resolving dependencies'
     Resolve-PSModuleDependency -ManifestFilePath $manifestFilePath
     Write-Host '::endgroup::'
+    # Install into a version folder that matches the manifest's ModuleVersion so PowerShell
+    # accepts the module. Fall back to the 999.0.0 placeholder only when the manifest is
+    # unstamped (e.g. a build that opted out of version resolution). Validate the version as a
+    # real [version] so a malformed manifest cannot inject path separators/traversal into the
+    # install path.
+    $manifestVersion = (Import-PowerShellDataFile -Path $manifestFilePath).ModuleVersion
+    if ([string]::IsNullOrWhiteSpace($manifestVersion)) {
+        $moduleVersion = '999.0.0'
+    } else {
+        $parsedVersion = $null
+        if (-not [version]::TryParse($manifestVersion, [ref] $parsedVersion)) {
+            throw "ModuleVersion '$manifestVersion' in [$manifestFilePath] is not a valid version."
+        }
+        $moduleVersion = $parsedVersion.ToString()
+    }
     $PSModulePath = $env:PSModulePath -split [System.IO.Path]::PathSeparator | Select-Object -First 1
-    $codePath = New-Item -Path "$PSModulePath/$moduleName/999.0.0" -ItemType Directory -Force | Select-Object -ExpandProperty FullName
+    $moduleInstallRoot = Join-Path -Path $PSModulePath -ChildPath $moduleName
+    $moduleInstallPath = Join-Path -Path $moduleInstallRoot -ChildPath $moduleVersion
+    $codePath = New-Item -Path $moduleInstallPath -ItemType Directory -Force |
+        Select-Object -ExpandProperty FullName
     Copy-Item -Path "$Path/*" -Destination $codePath -Recurse -Force
     Write-Host '::group::Importing module'
-    Import-Module -Name $moduleName -Verbose
+    # Import the freshly-installed copy explicitly by its manifest path (with -Force) so it is
+    # not shadowed by another version of the same module that may already be loaded or present
+    # on $env:PSModulePath.
+    $installedManifestPath = Join-Path -Path $codePath -ChildPath "$moduleName.psd1"
+    Import-Module -Name $installedManifestPath -Force -Global -Verbose
     Write-Host '::endgroup::'
     if ($PassThru) {
         return $codePath
