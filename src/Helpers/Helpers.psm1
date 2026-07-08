@@ -324,9 +324,10 @@ function Install-PSModule {
     $codePath = New-Item -Path (Join-Path -Path $PSModulePath -ChildPath $moduleName -AdditionalChildPath $moduleVersion) -ItemType Directory -Force | Select-Object -ExpandProperty FullName
     Copy-Item -Path "$Path/*" -Destination $codePath -Recurse -Force
     Write-Host '::group::Importing module'
-    # Import the freshly-installed copy explicitly by its manifest path so it is not shadowed
-    # by another version of the same module that may already be on $env:PSModulePath.
-    Import-Module -Name (Join-Path -Path $codePath -ChildPath "$moduleName.psd1") -Verbose
+    # Import the freshly-installed copy explicitly by its manifest path (with -Force) so it is
+    # not shadowed by another version of the same module that may already be loaded or present
+    # on $env:PSModulePath.
+    Import-Module -Name (Join-Path -Path $codePath -ChildPath "$moduleName.psd1") -Force -Verbose
     Write-Host '::endgroup::'
     if ($PassThru) {
         return $codePath
