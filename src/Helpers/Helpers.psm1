@@ -313,8 +313,15 @@ function Install-PSModule {
     Write-Host '::group::Resolving dependencies'
     Resolve-PSModuleDependency -ManifestFilePath $manifestFilePath
     Write-Host '::endgroup::'
+    # Install into a version folder that matches the manifest's ModuleVersion so PowerShell
+    # accepts the module. Fall back to the 999.0.0 placeholder only when the manifest is
+    # unstamped (e.g. a build that opted out of version resolution).
+    $moduleVersion = (Import-PowerShellDataFile -Path $manifestFilePath).ModuleVersion
+    if ([string]::IsNullOrWhiteSpace($moduleVersion)) {
+        $moduleVersion = '999.0.0'
+    }
     $PSModulePath = $env:PSModulePath -split [System.IO.Path]::PathSeparator | Select-Object -First 1
-    $codePath = New-Item -Path "$PSModulePath/$moduleName/999.0.0" -ItemType Directory -Force | Select-Object -ExpandProperty FullName
+    $codePath = New-Item -Path "$PSModulePath/$moduleName/$moduleVersion" -ItemType Directory -Force | Select-Object -ExpandProperty FullName
     Copy-Item -Path "$Path/*" -Destination $codePath -Recurse -Force
     Write-Host '::group::Importing module'
     Import-Module -Name $moduleName -Verbose
