@@ -38,3 +38,7 @@ jobs:
           } else {
             throw "Helpers module not found!"
           }
+
+      - name: Run Install-PSModule regression tests
+        shell: pwsh
+        run: ./tests/Install-PSModule.Tests.ps1
