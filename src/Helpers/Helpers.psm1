@@ -329,13 +329,17 @@ function Install-PSModule {
         $moduleVersion = $parsedVersion.ToString()
     }
     $PSModulePath = $env:PSModulePath -split [System.IO.Path]::PathSeparator | Select-Object -First 1
-    $codePath = New-Item -Path (Join-Path -Path (Join-Path -Path $PSModulePath -ChildPath $moduleName) -ChildPath $moduleVersion) -ItemType Directory -Force | Select-Object -ExpandProperty FullName
+    $moduleInstallRoot = Join-Path -Path $PSModulePath -ChildPath $moduleName
+    $moduleInstallPath = Join-Path -Path $moduleInstallRoot -ChildPath $moduleVersion
+    $codePath = New-Item -Path $moduleInstallPath -ItemType Directory -Force |
+        Select-Object -ExpandProperty FullName
     Copy-Item -Path "$Path/*" -Destination $codePath -Recurse -Force
     Write-Host '::group::Importing module'
     # Import the freshly-installed copy explicitly by its manifest path (with -Force) so it is
     # not shadowed by another version of the same module that may already be loaded or present
     # on $env:PSModulePath.
-    Import-Module -Name (Join-Path -Path $codePath -ChildPath "$moduleName.psd1") -Force -Verbose
+    $installedManifestPath = Join-Path -Path $codePath -ChildPath "$moduleName.psd1"
+    Import-Module -Name $installedManifestPath -Force -Global -Verbose
     Write-Host '::endgroup::'
     if ($PassThru) {
         return $codePath
