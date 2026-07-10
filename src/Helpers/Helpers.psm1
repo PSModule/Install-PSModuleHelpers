@@ -1207,7 +1207,7 @@ function Import-TestData {
     param()
 
     if ([string]::IsNullOrWhiteSpace($env:PSMODULE_TEST_DATA)) {
-        Write-Host 'No test data was provided by the calling workflow.'
+        Write-Verbose 'No test data was provided by the calling workflow.'
         return
     }
     if ([string]::IsNullOrWhiteSpace($env:GITHUB_ENV)) {
@@ -1294,8 +1294,8 @@ function Import-TestData {
         if ($null -eq $Map) { return }
         $count = 0
         foreach ($item in $Map.PSObject.Properties) {
-            $name = $item.Name
-            Assert-EnvironmentName -Name $name
+            $entryName = $item.Name
+            Assert-EnvironmentName -Name $entryName
             $value = Get-EnvironmentValue -Value $item.Value -Name $Name
             if ($Mask) {
                 foreach ($line in ($value -split "`n")) {
@@ -1308,7 +1308,7 @@ function Import-TestData {
             do {
                 $delimiter = "GHENV_$([guid]::NewGuid().ToString('N'))"
             } while ($value.Contains($delimiter))
-            Add-Content -Path $env:GITHUB_ENV -Value "$name<<$delimiter" -Encoding utf8
+            Add-Content -Path $env:GITHUB_ENV -Value "$entryName<<$delimiter" -Encoding utf8
             Add-Content -Path $env:GITHUB_ENV -Value $value -Encoding utf8
             Add-Content -Path $env:GITHUB_ENV -Value $delimiter -Encoding utf8
             $count++
