@@ -96,6 +96,17 @@ try {
     $env:PSMODULE_TEST_DATA = '{"secrets":{"MY_SECRET":[1,2]}}'
     & $assertThrows { Import-TestData } '*TestData.secrets*scalar*' 'Non-scalar value must be rejected naming the section.'
 
+    # A failed write to GITHUB_ENV is terminating even when the caller's ErrorActionPreference is Continue.
+    $env:PSMODULE_TEST_DATA = '{"variables":{"MY_VARIABLE":"plain-text-value"}}'
+    $env:GITHUB_ENV = Join-Path -Path $testRoot -ChildPath 'missing-dir/github_env'
+    $previousEap = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        & $assertThrows { Import-TestData } '*missing-dir*' 'Expected an unwritable GITHUB_ENV path to raise a terminating error.'
+    } finally {
+        $ErrorActionPreference = $previousEap
+    }
+
     # Missing GITHUB_ENV fails fast with a clear message instead of a generic parameter-binding error.
     $env:PSMODULE_TEST_DATA = '{"variables":{"MY_VARIABLE":"plain-text-value"}}'
     $env:GITHUB_ENV = ''

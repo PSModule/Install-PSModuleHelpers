@@ -1308,9 +1308,9 @@ function Import-TestData {
             do {
                 $delimiter = "GHENV_$([guid]::NewGuid().ToString('N'))"
             } while ($value.Contains($delimiter))
-            Add-Content -Path $env:GITHUB_ENV -Value "$entryName<<$delimiter" -Encoding utf8
-            Add-Content -Path $env:GITHUB_ENV -Value $value -Encoding utf8
-            Add-Content -Path $env:GITHUB_ENV -Value $delimiter -Encoding utf8
+            Add-Content -Path $env:GITHUB_ENV -Value "$entryName<<$delimiter" -Encoding utf8 -ErrorAction Stop
+            Add-Content -Path $env:GITHUB_ENV -Value $value -Encoding utf8 -ErrorAction Stop
+            Add-Content -Path $env:GITHUB_ENV -Value $delimiter -Encoding utf8 -ErrorAction Stop
             $count++
         }
         if ($count -gt 0) {
