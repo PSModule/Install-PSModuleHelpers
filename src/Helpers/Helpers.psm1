@@ -1207,8 +1207,11 @@ function Import-TestData {
     param()
 
     if ([string]::IsNullOrWhiteSpace($env:PSMODULE_TEST_DATA)) {
-        Write-Output 'No test data was provided by the calling workflow.'
+        Write-Host 'No test data was provided by the calling workflow.'
         return
+    }
+    if ([string]::IsNullOrWhiteSpace($env:GITHUB_ENV)) {
+        throw 'Import-TestData requires the GITHUB_ENV environment file, which is only available inside GitHub Actions.'
     }
     try {
         $data = $env:PSMODULE_TEST_DATA | ConvertFrom-Json -ErrorAction Stop
@@ -1298,7 +1301,7 @@ function Import-TestData {
                 foreach ($line in ($value -split "`n")) {
                     $line = $line.TrimEnd("`r")
                     if ($line.Length -gt 0) {
-                        Write-Output "::add-mask::$line"
+                        Write-Host "::add-mask::$line"
                     }
                 }
             }
@@ -1312,9 +1315,9 @@ function Import-TestData {
         }
         if ($count -gt 0) {
             if ($Mask) {
-                Write-Output "Exposed $count secret value(s) as environment variables."
+                Write-Host "Exposed $count secret value(s) as environment variables."
             } else {
-                Write-Output "Exposed $count variable value(s) as environment variables."
+                Write-Host "Exposed $count variable value(s) as environment variables."
             }
         }
     }
