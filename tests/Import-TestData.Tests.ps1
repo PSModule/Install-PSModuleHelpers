@@ -48,7 +48,7 @@ try {
     Set-Content -Path $githubEnvPath -Value '' -NoNewline
     $env:PSMODULE_TEST_DATA = '{"secrets":{"MY_SECRET":"not-a-real-secret"}}'
     $information = Import-TestData 6>&1 | Out-String
-    & $assert ($information -match '::add-mask::not-a-real-secret') 'Expected the secret value to be masked via ::add-mask:: on the information stream.'
+    & $assert ($information -match '::add-mask::not-a-real-secret') 'Expected the secret to be masked via ::add-mask:: on the information stream.'
 
     # A no-op when no test data is provided; nothing on the success/pipeline stream.
     $env:PSMODULE_TEST_DATA = ''
