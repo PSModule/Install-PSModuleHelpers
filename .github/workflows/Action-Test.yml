@@ -42,3 +42,7 @@ jobs:
       - name: Run Install-PSModule regression tests
         shell: pwsh
         run: ./tests/Install-PSModule.Tests.ps1
+
+      - name: Run Import-TestData tests
+        shell: pwsh
+        run: ./tests/Import-TestData.Tests.ps1
